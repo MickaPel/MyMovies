@@ -81,6 +81,7 @@ export default function PrimarySearchAppBar() {
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
+            // sx={{backgroundColor: "#181818", color: "#b0e0a8"}}
             anchorEl={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
@@ -149,7 +150,7 @@ export default function PrimarySearchAppBar() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" style={{ backgroundColor: "#181818" }}>
+            <AppBar position="static" style={{ backgroundColor: "#181818", color: "#b0e0a8" }}>
                 <Toolbar>
                     <IconButton
                         size="large"
@@ -173,7 +174,8 @@ export default function PrimarySearchAppBar() {
                                 backgroundColor: "#181818",
                                 flexWrap: 'wrap',
                                 height: '100%',
-                                width: 150
+                                width: 150,
+                                color: "#f0f69f"
                             }}>
                                 <List>
                                 {listMenu.map((item, index) => {
