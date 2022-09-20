@@ -1,27 +1,23 @@
-import React, { useState } from 'react';
-import {  useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+
+import { useAuthValue } from "../../AuthContext"
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -64,64 +60,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-    let navigate =  useNavigate();
 
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const isMenuOpen = Boolean(anchorEl);
-
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-        <Menu
-            // sx={{backgroundColor: "#181818", color: "#b0e0a8"}}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-            // style={{backgroundColor: "#181818"}}
-        >
-            <MenuItem onClick={handleMenuClose}>Inscription</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Connexion</MenuItem>
-        </Menu>
-    );
+    //navigation
+    let navigate = useNavigate();
 
     //Drawer
     const [openDrawer, setOpenDrawer] = useState(false);
-
-    // const toggleDrawer = () => (event) => {
-    //     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-    //         return;
-    //     }
-
-    //     setOpenDrawer(true);
-    // };
 
     const handleDrawerOpen = () => {
         setOpenDrawer(true);
     };
 
     const handleDrawerClose = (event) => {
-        // if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-        //     setOpenDrawer(false);
-        //         }
-                setOpenDrawer(false);
+        setOpenDrawer(false);
     };
 
     const listMenu = [
@@ -147,6 +98,9 @@ export default function PrimarySearchAppBar() {
         }
     ];
 
+    //user status
+    const { currentUser } = useAuthValue();
+
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -167,33 +121,36 @@ export default function PrimarySearchAppBar() {
                         open={openDrawer}
                         onClose={handleDrawerClose}
                         transitionDuration={400}
-                        sx={{color: "#181818"}}
+                        sx={{ color: "#181818" }}
                     >
                         <Box sx={{
-                                display: 'flex',
-                                backgroundColor: "#181818",
-                                flexWrap: 'wrap',
-                                height: '100%',
-                                width: 150,
-                                color: "#f0f69f"
-                            }}>
-                                <List>
+                            display: 'flex',
+                            backgroundColor: "#181818",
+                            flexWrap: 'wrap',
+                            height: '100%',
+                            width: 150,
+                            color: "#f0f69f"
+                        }}>
+                            <List>
                                 {listMenu.map((item, index) => {
-                                        const { text, icon, onClick } = item;
-                                        return (
-                                    <ListItem button key={text} onClick={onClick}>
-                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                                        <ListItemText primary={text} />
-                                    </ListItem>
-                                    )})}
-                                </List>
+                                    const { text, icon, onClick } = item;
+                                    return (
+                                        <ListItem button key={text} onClick={onClick}>
+                                            {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                            <ListItemText primary={text} />
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
                         </Box>
                     </Drawer>
                     <Typography
                         variant="h6"
                         noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
+                        color="#b0e0a8"
+                        component={Link}
+                        to='/'
+                        sx={{ textDecoration: 'none', display: { xs: 'none', sm: 'block' } }}
                     >
                         MyMovies
                     </Typography>
@@ -212,17 +169,16 @@ export default function PrimarySearchAppBar() {
                             size="large"
                             edge="end"
                             aria-label="account of current user"
-                            aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
+                            onClick={() => navigate('/profile')}
                         >
-                            <AccountCircle />
+                            {currentUser !== null ?
+                            <AccountCircle style={{ color: "#3CCF4E" }} />:
+                            <AccountCircle style={{ color: "#b0e0a8" }} />}
                         </IconButton>
                     </Box>
                 </Toolbar>
             </AppBar>
-            {renderMenu}
         </Box>
     );
 }

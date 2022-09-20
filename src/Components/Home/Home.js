@@ -1,27 +1,68 @@
 import React from 'react';
 import {  useNavigate } from "react-router-dom";
+import { useAuthValue } from "../../AuthContext"
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 
 function Home() {
 
+  //navigation
   const navigate = useNavigate();
 
-  return (
+  //user status
+  const {currentUser} = useAuthValue()
+
+  return currentUser === null ? (
     <div style= {{display:'flex', justifyContent:'center'}}>
       <Box sx={{ width: '100%', maxWidth: 500, marginTop: 30 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom color="#e0bb20">
           Welcome to MyMovies !!
         </Typography>
-        <Typography variant="button" component={Button} onClick={() => navigate("/signup")} gutterBottom color="#e0bb20">
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+        <Typography variant="button" component={Button} onClick={() => navigate("/signup")} gutterBottom color="#C98474">
           Sign Up
         </Typography>
-        <Typography variant="button" component={Button} onClick={() => navigate("/signin")} gutterBottom color="#e0bb20">
+        <Typography variant="button" gutterBottom color="#e0bb20">
+        or
+        </Typography>
+        <Typography variant="button" component={Button} onClick={() => navigate("/signin")} gutterBottom color="#C98474">
           Sign In
         </Typography>
+        </Grid>
+
+      </Box>
+    </div>
+  ) : (
+    <div style= {{display:'flex', justifyContent:'center'}}>
+      <Box sx={{ width: '100%', maxWidth: 500, marginTop: 30 }}>
+        <Typography variant="h4" gutterBottom color="#e0bb20">
+          Page de contenu
+        </Typography>
+        {/* <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+        <Typography variant="button" component={Button} onClick={() => navigate("/signup")} gutterBottom color="#C98474">
+          Sign Up
+        </Typography>
+        <Typography variant="button" gutterBottom color="#e0bb20">
+        or
+        </Typography>
+        <Typography variant="button" component={Button} onClick={() => navigate("/signin")} gutterBottom color="#C98474">
+          Sign In
+        </Typography>
+        </Grid> */}
 
       </Box>
     </div>

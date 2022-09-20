@@ -184,10 +184,11 @@ function MoviePage() {
             <StyledTextField
                 id="outlined-textarea"
                 label="Add a comment"
-                multiline/>
+                multiline
+                sx={{input: {color: "#FD841F"}}}/>
                 <ThemeProvider theme={theme}>
-            <Button variant="outlined" color="neutral" sx={{marginLeft: 1}}>Send</Button>
-            </ThemeProvider>
+                  <Button variant="outlined" color="neutral" sx={{marginLeft: 1}}>Send</Button>
+                </ThemeProvider>
         </Grid>
       </Paper>
     </div>
