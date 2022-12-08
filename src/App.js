@@ -38,7 +38,7 @@ function App() {
                     <Route exact path="/" element={<Home />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/categories" element={<Categories />} />
-                    <Route path="/movie-page" element={<MoviePage />} />
+                    <Route path="/movie-page/:id" element={<MoviePage />} />
                     <Route path="/movie-page-content" element={<MoviesPageContent />} />
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />

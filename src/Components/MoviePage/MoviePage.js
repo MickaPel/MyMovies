@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
@@ -15,11 +15,10 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-
-
-
-import gladiator from "../Images/gladiator.jpg"
-
+import { Navigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAsyncMovieOrSeriePage, fetchAsyncMovieOrSeriePageCredits } from '../../features/movies/moviesSlice.js';
+import { getMovieOrSeriePage, getMovieOrSeriePageCredits, removeSelectedMovieOrShow } from "../../features/movies/moviesSlice.js";
 
 const labels = {
   0.5: 'Unacceptable',
@@ -104,8 +103,35 @@ function MoviePage() {
   const [value, setValue] = useState(2);
   const [hover, setHover] = useState(-1);
 
+  
+
+  //get url
+  const { id } = useParams();
+  // console.log(id);
+
+
+  const dispatch = useDispatch();
+  const data = useSelector(getMovieOrSeriePage);
+  const creditsData = useSelector(getMovieOrSeriePageCredits);
+  console.log(data);
+  console.log(creditsData);
+
+  useEffect(() => {
+    dispatch(fetchAsyncMovieOrSeriePage(id));
+    dispatch(fetchAsyncMovieOrSeriePageCredits(id));
+    return () => {
+      dispatch(removeSelectedMovieOrShow());
+    }
+  }, [dispatch, id]);
+
+  // const foundDirector = creditsData.crew.find(element => element.job === "Director");
+
   return (
     <div style={{paddingTop: 10, marginLeft:5, marginRight: 5}}>
+      {Object.keys(data && creditsData).length === 0 ? (
+        <div>...Loading</div>
+      ) : (
+        <>
       <Paper sx={{
               p: 2,
               margin: 'auto',
@@ -117,9 +143,28 @@ function MoviePage() {
           <Grid item xs={12}  container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
-                <ButtonBase sx={{ width: 300, height: 300 }}>
-                  <Img alt="complex" src={gladiator} />
+                <ButtonBase sx={{ width: 300, height: 300 }} href={`https://image.tmdb.org/t/p/original/${data.poster_path}`}>
+                    <Img alt="complex" src={`https://image.tmdb.org/t/p/original/${data.poster_path}`}/>
                 </ButtonBase>
+                <Typography gutterBottom variant="h4" component="div" sx={{color: "#94B49F", marginTop: 4}}>
+                  {data.original_title}
+                </Typography>
+                <Grid container direction="row" justifyContent="center" alignItems="center">
+                  {/* {data && data.genres?.map((data, index) => (
+                    <Typography variant="body2" gutterBottom sx={{color: "#FA9494"}} data={data} key={index}>
+                      {data.name} &nbsp;
+                    </Typography>
+                  ))} */}
+                </Grid>
+                <Typography variant="subtitle1" gutterBottom color="text" sx={{color: "#ADDDD0", marginTop: 3}}>
+                  {data.release_date}
+                </Typography> 
+                <Typography variant="subtitle1" gutterBottom color="text" sx={{color: "#ADDDD0"}}>
+                  {data.runtime} min
+                </Typography>
+                <Typography variant="body2" gutterBottom sx={{color: "#F2D388", marginTop: 3}}>
+                  "{data.tagline}"
+                </Typography>
                   <Grid item sx={{paddingTop: 4}}>
                       <Rating
                         max={10}
@@ -145,23 +190,59 @@ function MoviePage() {
                         </IconButton>
                       </Tooltip>
                   </Grid>
-                  <Typography gutterBottom variant="subtitle1" component="div">
-                    [nom film]
+                  <Typography variant="body2" gutterBottom sx={{color: "#FFC4C4", marginTop: 3}}>
+                    {data.overview}
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    [année]
+                  <Typography variant="subtitle1" gutterBottom sx={{color: "#FA9494", textDecoration: "underline", marginTop: 3}}>
+                    Cast:
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    [budget]
+                  <Grid container direction="row" justifyContent="center" alignItems="center">
+                    {/* {creditsData && creditsData.cast?.map((data, index) => (
+                      <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}} data={data} key={index}>
+                        {data.character}: {data.name} &nbsp;
+                      </Typography>
+                    ))} */}
+                  </Grid>
+                  <Typography variant="subtitle1" gutterBottom color="text" sx={{color: "#FA9494", textDecoration: "underline"}}>
+                    Director:
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    [boxoffice]
+                  <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}}>
+                    {/* {data.foundDirector.name} */}
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    [cast]
+                  <Typography variant="subtitle1" gutterBottom sx={{color: "#FA9494", textDecoration: "underline"}}>
+                    {/* {data === true && data.Country && data.Country.includes(",") ? "Countries:" : "Country:"} */}
+                    Country:
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    [synopsis]
+                  <Grid container direction="row" justifyContent="center" alignItems="center">
+                    {/* {data && data.production_countries.map((data, index) => (
+                      <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}} data={data} key={index}>
+                        {data.name} &nbsp;
+                      </Typography>
+                    ))} */}
+                  </Grid>
+                  {/* {data && data.Awards !== 'N/A' ?
+                    <div>
+                      <Typography variant="body2" gutterBottom sx={{color: "#FA9494", textDecoration: "underline"}}>
+                        Awards:
+                      </Typography>
+                      <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}}>
+                        {data.Awards}
+                      </Typography>
+                    </div> : <></> } */}
+                  {/* {data && data.Rated !== 'N/A' ?
+                    <div>
+                      <Typography variant="body2" gutterBottom sx={{color: "#FA9494", textDecoration: "underline"}}>
+                        Rated:
+                      </Typography>
+                      <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}}>
+                        {data.Rated}
+                      </Typography>
+                    </div> : <></> } */}
+                  <Typography variant="subtitle1" gutterBottom sx={{color: "#FA9494", textDecoration: "underline"}}>
+                  TMDB Rating:
+                  </Typography>
+                  <Typography variant="body2" gutterBottom sx={{color: "#ADDDD0"}}>
+                    {data.vote_average}
                   </Typography>
               </Grid>
             </Grid>
@@ -191,6 +272,8 @@ function MoviePage() {
                 </ThemeProvider>
         </Grid>
       </Paper>
+      </>
+      )}
     </div>
   )
 }
